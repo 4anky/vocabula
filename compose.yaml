@@ -1,9 +1,9 @@
 services:
   web-server:
-    build: .
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     container_name: vocabula
-    ports:
-      - "8000:8000"
     restart: always
     env_file:
       - .env
@@ -13,8 +13,6 @@ services:
   db:
     image: postgres:16
     container_name: postgres
-    ports:
-      - "5432:5432"
     restart: always
     env_file:
       - .env

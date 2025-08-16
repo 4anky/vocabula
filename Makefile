@@ -3,3 +3,6 @@ build-web:  # Собирает образ веб-сервера без испо�
 
 run-web:  # Запускает контейнер веб-сервера
 	docker run -p 8000:8000 -d vocabula
+
+rm-web:
+	docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
