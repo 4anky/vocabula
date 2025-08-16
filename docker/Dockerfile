@@ -1,10 +1,25 @@
 FROM python:3.13-slim
 
-WORKDIR /vocabula
+# Установим зависимости для Poetry
+RUN apt-get update && apt-get install -y curl build-essential && rm -rf /var/lib/apt/lists/*
 
-COPY requirements/prod.txt .
-RUN pip3 install -r prod.txt
+# Устанавливаем Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
 
-COPY ../vocabula .
+# Устанавливаем Poetry в PATH
+ENV PATH="/root/.local/bin:$PATH"
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+WORKDIR /app
+
+# Копируем весь проект
+COPY . .
+
+# Устанавливаем зависимости без виртуального окружения
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-root --only production
+
+# Открываем порт
+EXPOSE 8000
+
+# Команда запуска FastAPI
+CMD ["poetry", "run", "uvicorn", "vocabula.main:app", "--host", "0.0.0.0", "--port", "8000"]
