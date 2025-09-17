@@ -1,24 +1,20 @@
+import asyncio
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
 
 from fastapi import FastAPI
 
-from vocabula.core import settings
+from vocabula.api import (
+    root_router,
+    users_router,
+)
 
 
 @asynccontextmanager
-async def _lifespan(api: FastAPI) -> AsyncIterator[None]:
-    # await connect_db()
+async def lifespan(_: FastAPI):
+    await asyncio.create_subprocess_exec('alembic', 'upgrade', 'head')
     yield
-    # await disconnect_db()
 
 
-app = FastAPI(lifespan=_lifespan)
-
-
-@app.get('/')
-async def root():
-    return {
-        'message': 'Hello from Vocabula!',
-        'config': settings.model_dump(exclude_unset=True),
-    }
+app = FastAPI(lifespan=lifespan)
+app.include_router(root_router)
+app.include_router(users_router)

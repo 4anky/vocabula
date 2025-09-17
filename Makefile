@@ -1,8 +1,6 @@
-build-web:  # Собирает образ веб-сервера без использования кеширования
-	docker build -t vocabula --no-cache -f docker/Dockerfile .
+up:
+	docker compose up --build -d
 
-run-web:  # Запускает контейнер веб-сервера
-	docker run -p 8000:8000 -d vocabula
+down:
+	docker compose down -v
 
-rm-web:
-	docker stop $(docker ps -aq) && docker rm $(docker ps -aq)

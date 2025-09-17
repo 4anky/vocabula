@@ -1,5 +1,6 @@
 services:
   web-server:
+    user: "${UID}:${GID}"
     build:
       context: .
       dockerfile: docker/Dockerfile
@@ -9,6 +10,12 @@ services:
       - .env
     depends_on:
       - db
+    healthcheck:
+      test: [ "CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/').read()" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
   db:
     image: postgres:16
@@ -18,6 +25,12 @@ services:
       - .env
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
   nginx:
     image: nginx:latest
@@ -29,6 +42,12 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - web-server
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
 volumes:
   pgdata:
