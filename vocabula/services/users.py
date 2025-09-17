@@ -11,7 +11,7 @@ __all__ = (
 
 
 async def create_user(db: AsyncSession, user_in: UserCreate):
-    user = User(email=str(user_in.email), username=user_in.username)
+    user = User(username=user_in.username)
     db.add(user)
     await db.commit()
     await db.refresh(user)

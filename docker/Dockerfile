@@ -1,5 +1,8 @@
 FROM python:3.13-slim
 
+RUN groupadd -g 1000 group && \
+    useradd -u 1000 -g group user
+
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 

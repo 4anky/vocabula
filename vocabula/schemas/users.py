@@ -6,11 +6,10 @@ __all__ = (
     'UserOut',
 )
 
+
 class UserOut(BaseModel):
     id: int
-    email: EmailStr
     username: str
-    is_active: bool
     created_at: datetime
 
     class Config:
@@ -18,6 +17,4 @@ class UserOut(BaseModel):
 
 
 class UserCreate(BaseModel):
-    email: EmailStr
     username: str
-    is_active: bool = True
