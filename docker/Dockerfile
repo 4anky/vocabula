@@ -1,20 +1,20 @@
 FROM python:3.13-slim
 
-RUN groupadd -g 1000 group && \
-    useradd -u 1000 -g group user
-
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+RUN groupadd -g 1000 group && \
+    useradd -u 1000 -g group user
+
+RUN pip install poetry
+
 WORKDIR /app
 
-# копируем сначала только зависимости, чтобы кешировать pip install
-COPY requirements.txt /app/requirements.txt
-RUN pip install --upgrade pip && \
-    pip install -r /app/requirements.txt
+COPY pyproject.toml poetry.lock README.md ./
 
-# затем весь код
-COPY . /app
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-ansi --without dev --no-root
 
-# Команда запуска FastAPI
-CMD ["uvicorn", "vocabula.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+COPY ./vocabula/ ./vocabula
+
+CMD ["uvicorn", "vocabula.main:app", "--host", "0.0.0.0", "--port", "8000"]
