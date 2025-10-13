@@ -1,7 +1,7 @@
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
-__all__ = (
-    'Base',
-)
+__all__ = ('Base',)
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    pass

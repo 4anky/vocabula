@@ -1,39 +1,45 @@
-from logging.config import fileConfig
 import os
 import sys
+from logging.config import fileConfig
 
 from sqlalchemy import pool
+from sqlalchemy.engine.base import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
-from alembic import context
 
+from alembic import context
 from vocabula.db import DATABASE_URL
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-if DATABASE_URL:
-    config.set_main_option('sqlalchemy.url', DATABASE_URL)
+if DATABASE_URL is None:
+    raise RuntimeError('No sqlalchemy url specified')
+config.set_main_option('sqlalchemy.url', DATABASE_URL)
 
 # Interpret the config file for Python logging.
-fileConfig(config.config_file_name)
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
+else:
+    raise ValueError('No configuration file specified')
+
 
 # ensure project root is on path (so imports like "app.*" работают)
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+import vocabula.models.users  # noqa: F401 (импортирует модель и регистрирует её в Base.metadata)
+
 # Импортируем metadata от Base и модели — важно,
 # чтобы автоматическая генерация видела таблицы
 from vocabula.db.base import Base  # noqa: E402,F401
-import vocabula.models.users  # noqa: F401 (импортирует модель и регистрирует её в Base.metadata)
 
 target_metadata = Base.metadata
 
 
-def run_migrations_offline():
+def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
-    url = config.get_main_option('sqlalchemy.url')
     context.configure(
-        url=url,
+        url=DATABASE_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={'paramstyle': 'named'},
@@ -43,7 +49,7 @@ def run_migrations_offline():
         context.run_migrations()
 
 
-def do_run_migrations(connection):
+def do_run_migrations(connection: Connection) -> None:
     context.configure(
         connection=connection,
         target_metadata=target_metadata,
@@ -54,10 +60,10 @@ def do_run_migrations(connection):
         context.run_migrations()
 
 
-async def run_migrations_online():
+async def run_migrations_online() -> None:
     """Run migrations in 'online' mode using an AsyncEngine."""
     connectable = create_async_engine(
-        config.get_main_option('sqlalchemy.url'),
+        DATABASE_URL,
         poolclass=pool.NullPool,
     )
 

@@ -1,7 +1,9 @@
-from sqlalchemy.future import select
-from ..models import User
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Sequence
 
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+
+from ..models import User
 from ..schemas import UserCreate
 
 __all__ = (
@@ -10,7 +12,7 @@ __all__ = (
 )
 
 
-async def create_user(db: AsyncSession, user_in: UserCreate):
+async def create_user(db: AsyncSession, user_in: UserCreate) -> User:
     user = User(username=user_in.username)
     db.add(user)
     await db.commit()
@@ -18,6 +20,6 @@ async def create_user(db: AsyncSession, user_in: UserCreate):
     return user
 
 
-async def get_all_users(db: AsyncSession):
+async def get_all_users(db: AsyncSession) -> Sequence[User]:
     result = await db.execute(select(User))
     return result.scalars().all()
