@@ -1,9 +1,8 @@
-from sqlalchemy import Column, BigInteger, String, DateTime, text
+from sqlalchemy import BigInteger, Column, DateTime, String, text
+
 from vocabula.db.base import Base
 
-__all__ = (
-    'User',
-)
+__all__ = ('User',)
 
 
 class User(Base):

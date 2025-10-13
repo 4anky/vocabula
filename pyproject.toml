@@ -40,9 +40,30 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.2"
 pytest-cov = "^7.0.0"
-black = "^25.1.0"
-isort = "^6.0.1"
-ruff = "^0.13.0"
-mypy = "^1.18.1"
+pre-commit = "^4.3.0"
+black = "^25.9.0"
+isort = "^7.0.0"
+ruff = "^0.14.0"
+mypy = "^1.18.2"
 bandit = "^1.8.6"
 
+[tool.black]
+skip-string-normalization = true
+line-length = 89
+target-version = ["py313"]
+
+[tool.isort]
+profile = "black"
+line_length = 89
+
+[tool.mypy]
+python_version = "3.13"
+files = ["vocabula", "tests"]
+exclude = "alembic.env"
+ignore_missing_imports = true
+strict = true
+pretty = true
+
+[tool.bandit]
+recursive = true
+quiet = true

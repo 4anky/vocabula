@@ -1,5 +1,6 @@
 import asyncio
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
 from fastapi import FastAPI
 
@@ -10,7 +11,7 @@ from vocabula.api import (
 
 
 @asynccontextmanager
-async def lifespan(_: FastAPI):
+async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
     await asyncio.create_subprocess_exec('alembic', 'upgrade', 'head')
     yield
 
