@@ -11,3 +11,7 @@ down:
 restart:
 	$(MAKE) down
 	$(MAKE) up
+
+.PHONY: rebuild-pre-commit  # устанавливает pre-commit + commit-msg хуки
+
+	pre-commit clean && pre-commit install --hook-type commit-msg
