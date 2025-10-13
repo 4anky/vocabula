@@ -1,6 +1,5 @@
 from datetime import datetime
-
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 __all__ = (
     'UserCreate',
