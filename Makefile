@@ -12,6 +12,7 @@ restart:
 
 .PHONY: rebuild-pre-commit  # устанавливает pre-commit + commit-msg хуки
 
+rebuild-pre-commit:
 	pre-commit clean && pre-commit install --hook-type commit-msg
 
 .PHONY: tests
