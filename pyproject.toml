@@ -7,7 +7,7 @@ authors = [
     {name = "Vladimir Repin",email = "vladimir.repin@phystech.edu"}
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.13,<4.0"
 dependencies = [
     "alembic (==1.16.5)",
     "annotated-types (==0.7.0)",
@@ -46,6 +46,9 @@ isort = "^7.0.0"
 ruff = "^0.14.0"
 mypy = "^1.18.2"
 bandit = "^1.8.6"
+pytest-asyncio = "^1.2.0"
+testcontainers = {extras = ["postgresql"], version = "^4.13.2"}
+httpx = "^0.28.1"
 
 [tool.black]
 skip-string-normalization = true
@@ -67,3 +70,4 @@ pretty = true
 [tool.bandit]
 recursive = true
 quiet = true
+exclude_dirs = ["tests"]

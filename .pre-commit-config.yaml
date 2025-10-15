@@ -38,7 +38,7 @@ repos:
         name: "Mypy type checker"
         language: system
         entry: poetry run mypy
-        args: ["--verbose", "alembic", "vocabula"]
+        args: ["alembic", "vocabula"]
         types: [python]
         pass_filenames: false
 
@@ -48,4 +48,4 @@ repos:
         name: "Bandit security scanner"
         language: system
         entry: poetry run bandit
-        args: ["-r", "."]
+        args: ["-c", "pyproject.toml", "-r", "."]
