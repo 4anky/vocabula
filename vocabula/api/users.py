@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..db import get_db
@@ -13,7 +13,7 @@ __all__ = ('users_router',)
 users_router = APIRouter(prefix='/users', tags=['Users'])
 
 
-@users_router.post('', response_model=UserOut)
+@users_router.post('', response_model=UserOut, status_code=status.HTTP_201_CREATED)
 async def create_one_user(
     user_in: UserCreate, db: AsyncSession = Depends(get_db)
 ) -> User:
