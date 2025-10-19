@@ -21,6 +21,7 @@ async def test_user_creation(db_session, client):
     )
     assert resp.status_code == status.HTTP_201_CREATED, resp.content
     new_user = resp.json()
+    assert set(new_user.keys()) == {'id', 'username', 'created_at'}
     assert new_user['username'] == 'test_username'
     assert new_user['id'] == 1
     assert isinstance(

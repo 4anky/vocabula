@@ -2,19 +2,28 @@ import os
 import sys
 from logging.config import fileConfig
 
+from alembic import context
+from dotenv import load_dotenv
 from sqlalchemy import pool
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from alembic import context
 from vocabula.db import DATABASE_URL
+
+load_dotenv()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-if DATABASE_URL is None:
-    raise RuntimeError('No sqlalchemy url specified')
+print(f'\n\n\nУрл, собранный в проекте из .env: {DATABASE_URL}')
+print(
+    f'Урл, полученный из тестов через monkeypatch: {os.environ.get('DATABASE_URL')}\n\n\n'
+)
+
+if os.environ.get('DATABASE_URL') is not None:
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+
 config.set_main_option('sqlalchemy.url', DATABASE_URL)
 
 # Interpret the config file for Python logging.
@@ -62,6 +71,9 @@ def do_run_migrations(connection: Connection) -> None:
 
 async def run_migrations_online() -> None:
     """Run migrations in 'online' mode using an AsyncEngine."""
+
+    print(f'DATABASE_URL из неосновного потока: {DATABASE_URL}')
+
     connectable = create_async_engine(
         DATABASE_URL,
         poolclass=pool.NullPool,

@@ -8,10 +8,17 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from testcontainers.postgres import PostgresContainer
 
-from vocabula.db import Base, get_db, get_engine
+from vocabula.db import get_db, get_engine
 from vocabula.main import app
 
 load_dotenv(Path(__file__).parent.parent / '.env')
+
+
+@pytest.fixture(scope='session')
+def project_root_path() -> Path:
+    project_root = Path(__file__).parent.parent
+    assert project_root.exists() and project_root.name == 'vocabula'
+    return project_root
 
 
 @pytest.fixture(scope='session')
@@ -20,7 +27,6 @@ def _db_container() -> Iterator[PostgresContainer]:
     with PostgresContainer(
         'postgres:16',
         username=environ['POSTGRES_USER'],
-        password=environ['POSTGRES_PASSWORD'],
         dbname=environ['POSTGRES_DB'],
         driver='asyncpg',
     ) as postgres:
@@ -30,15 +36,6 @@ def _db_container() -> Iterator[PostgresContainer]:
 @pytest.fixture
 def db_engine(_db_container: PostgresContainer) -> AsyncEngine:
     return get_engine(_db_container.get_connection_url())
-
-
-@pytest.fixture(autouse=True)
-async def _clear_database(db_engine: AsyncEngine) -> AsyncIterator[None]:
-    """Creates the actual DB schema before each test and removes all after one."""
-    async with db_engine.begin() as connection:
-        await connection.run_sync(Base.metadata.drop_all)
-        await connection.run_sync(Base.metadata.create_all)
-    yield
 
 
 @pytest.fixture

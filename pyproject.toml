@@ -50,6 +50,7 @@ bandit = "^1.8.6"
 pytest-asyncio = "^1.2.0"
 testcontainers = {extras = ["postgresql"], version = "^4.13.2"}
 httpx = "^0.28.1"
+pytest-timeout = "^2.4.0"
 
 [tool.black]
 skip-string-normalization = true
@@ -63,7 +64,7 @@ line_length = 89
 [tool.mypy]
 python_version = "3.13"
 files = ["vocabula", "tests"]
-exclude = "alembic.env"
+exclude = "migrations.env"
 ignore_missing_imports = true
 strict = true
 pretty = true
