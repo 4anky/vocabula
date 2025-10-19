@@ -1,0 +1,51 @@
+repos:
+  - repo: local
+    hooks:
+      - id: commit-msg-pattern
+        name: "Check commit message format"
+        entry: |
+          bash -c '
+          msg_file="$1"
+          msg=$(cat "$msg_file")
+          if [[ ! "$msg" =~ ^(bugfix|feature)/V-[0-9]+[[:space:]].+ ]]; then
+            echo "❌ Commit message must match pattern: <bugfix|feature>/V-<integer> <text>"
+            exit 1
+          fi
+          ' --
+        language: system
+        stages: [commit-msg]
+
+  - repo: local
+    hooks:
+      - id: black
+        name: "Black code formatter"
+        language: system
+        entry:  poetry run black
+        args: ["."]
+        types: [python]
+
+  - repo: local
+    hooks:
+      - id: isort
+        name: "Isort import sorter"
+        language: system
+        entry: poetry run isort
+        args: ["."]
+
+  - repo: local
+    hooks:
+      - id: mypy
+        name: "Mypy type checker"
+        language: system
+        entry: poetry run mypy
+        args: ["migrations", "vocabula"]
+        types: [python]
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: bandit
+        name: "Bandit security scanner"
+        language: system
+        entry: poetry run bandit
+        args: ["-c", "pyproject.toml", "-r", "."]
