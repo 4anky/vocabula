@@ -3,7 +3,6 @@ services:
     user: "${UID}:${GID}"
     build:
       context: .
-      dockerfile: docker/Dockerfile
     container_name: vocabula
     restart: always
     volumes:
@@ -22,9 +21,8 @@ services:
   migrate:
     build:
       context: .
-      dockerfile: docker/Dockerfile
     container_name: migrate
-    command: python3 scripts/migrate.py
+    command: alembic upgrade head
     depends_on:
       db:
         condition: service_healthy

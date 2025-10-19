@@ -38,7 +38,7 @@ repos:
         name: "Mypy type checker"
         language: system
         entry: poetry run mypy
-        args: ["migrations", "vocabula"]
+        args: ["vocabula"]
         types: [python]
         pass_filenames: false
 
