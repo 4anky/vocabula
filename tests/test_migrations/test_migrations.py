@@ -1,5 +1,6 @@
 import asyncio
 from pathlib import Path
+from typing import AsyncIterator
 
 import pytest
 from alembic import command
@@ -8,8 +9,7 @@ from alembic.config import Config
 from alembic.runtime.migration import MigrationContext
 from sqlalchemy import Engine, create_engine, select
 from sqlalchemy.exc import ProgrammingError
-from sqlalchemy.ext.asyncio import AsyncEngine
-from testcontainers.postgres import PostgresContainer
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 from vocabula.db import Base
 from vocabula.models import User
@@ -17,9 +17,8 @@ from vocabula.models import User
 
 @pytest.mark.asyncio
 async def test_models_match_migrations(
-    _db_container: PostgresContainer,
     db_engine: AsyncEngine,
-    db_session,
+    db_session: AsyncIterator[AsyncSession],
     project_root_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ):
@@ -31,7 +30,7 @@ async def test_models_match_migrations(
         with pytest.raises(ProgrammingError):
             _ = await connection.execute(select(User))
 
-    async_url = str(_db_container.get_connection_url())
+    async_url = db_engine.url.render_as_string(hide_password=False)
     sync_url = async_url.replace('+asyncpg', '')
 
     monkeypatch.setenv('DATABASE_URL', async_url)
