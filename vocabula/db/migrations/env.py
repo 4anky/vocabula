@@ -16,11 +16,7 @@ load_dotenv()
 # access to the values within the .ini file in use.
 config = context.config
 
-print(f'\n\n\nУрл, собранный в проекте из .env: {DATABASE_URL}')
-print(
-    f'Урл, полученный из тестов через monkeypatch: {os.environ.get('DATABASE_URL')}\n\n\n'
-)
-
+# We receive DATABASE_URL from tests
 if os.environ.get('DATABASE_URL') is not None:
     DATABASE_URL = os.environ.get('DATABASE_URL')
 
@@ -71,8 +67,6 @@ def do_run_migrations(connection: Connection) -> None:
 
 async def run_migrations_online() -> None:
     """Run migrations in 'online' mode using an AsyncEngine."""
-
-    print(f'DATABASE_URL из неосновного потока: {DATABASE_URL}')
 
     connectable = create_async_engine(
         DATABASE_URL,

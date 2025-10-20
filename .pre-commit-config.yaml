@@ -20,7 +20,7 @@ repos:
       - id: black
         name: "Black code formatter"
         language: system
-        entry:  poetry run black
+        entry: poetry run black
         args: ["."]
         types: [python]
 
@@ -49,3 +49,13 @@ repos:
         language: system
         entry: poetry run bandit
         args: ["-c", "pyproject.toml", "-r", "."]
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: "Run pytest before commit"
+        entry: poetry run pytest
+        language: system
+        types: [python]
+        pass_filenames: false
+        stages: [commit]
