@@ -1,7 +1,7 @@
 .PHONY: up down restart
 
 up:
-	docker compose run --rm migrate && docker compose up -d --build web-server nginx
+	docker compose run --rm migrate && docker compose up -d --build nginx
 
 down:
 	docker compose down -v
